@@ -257,6 +257,9 @@
             Controls.Add(loadButton);
             Controls.Add(saveButton);
             Controls.Add(dealButton);
+            MaximizeBox = false;
+            MaximumSize = new Size(1070, 578);
+            MinimumSize = new Size(1070, 578);
             Name = "MainForm";
             Text = "Poker Hand Simulator";
             Load += PokerHand_Load;

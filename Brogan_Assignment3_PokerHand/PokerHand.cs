@@ -85,6 +85,11 @@ namespace Brogan_Assignment3_PokerHand
                 hand[3] = cardFour.Image;
                 cardFive.Image = deckCopy.Images[dealerIndex++];
                 hand[4] = cardFive.Image;
+                keepBoxOne.Checked = false;
+                keepBoxTwo.Checked = false;
+                keepBoxThree.Checked = false;
+                keepBoxFour.Checked = false;
+                keepBoxFive.Checked = false;
             }
 
         }
@@ -116,7 +121,31 @@ namespace Brogan_Assignment3_PokerHand
 
         private void saveButton_Click(object sender, EventArgs e)
         {
+            SaveFileDialog save = new SaveFileDialog
+            {
+                DefaultExt = "txt",
+                Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*",
+                InitialDirectory = @"C:\Users\trist\source\repos\Brogan_Assignment3_PokerHand\Brogan_Assignment3_PokerHand\SavedHands\",
+                Title = "Save Poker Hand",
+                FileName = "PokerHand" // Default file name
+            };
 
+            if (save.ShowDialog() == DialogResult.OK)
+            {
+                string basePath = Path.GetDirectoryName(save.FileName);
+                string baseFileName = Path.GetFileNameWithoutExtension(save.FileName);
+
+                for (int i = 0; i < hand.Length; i++)
+                {
+                    if (hand[i] != null)
+                    {
+                        string imagePath = Path.Combine(basePath, $"{baseFileName}_Card{i + 1}.png");
+                        hand[i].Save(imagePath, System.Drawing.Imaging.ImageFormat.Png);
+                    }
+                }
+
+                MessageBox.Show("Poker hand saved successfully!", "Saved", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
         }
 
         private void loadButton_Click(object sender, EventArgs e)
