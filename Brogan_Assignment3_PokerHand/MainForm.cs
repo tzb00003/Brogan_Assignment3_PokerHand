@@ -5,13 +5,17 @@
         private Image[] hand = new Image[5];
         private int[] savedHand = new int[5];
         private ImageList deckCopy = new ImageList();
-        private int[] recordedIndex = new int[52];
+        private List<int> recordedIndex = new List<int>();
         private Random randomInt = new Random();
         private int dealerIndex = 52;
 
         public MainForm()
         {
             InitializeComponent();
+            for (int i = 0; i < 52; i++)
+            {
+                recordedIndex.Add(i);
+            }
             shuffleHand();
             dealHand();
         }
