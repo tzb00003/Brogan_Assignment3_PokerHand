@@ -12,10 +12,6 @@
         public MainForm()
         {
             InitializeComponent();
-            for(int i = 0; i < 52; i++)
-            {
-                recordedIndex[i] = i;
-            }
             shuffleHand();
             dealHand();
         }
@@ -29,6 +25,11 @@
         {
             if (dealerIndex >= 52)
             {
+                keepBoxFive.Checked = false;
+                keepBoxFour.Checked = false;
+                keepBoxThree.Checked = false;
+                keepBoxTwo.Checked = false;
+                keepBoxOne.Checked = false;
                 shuffleHand();
             }
             dealHand();
@@ -36,8 +37,21 @@
 
         private void shuffleHand()
         {
+            for (int i = 0; i < 52; i++)
+            {
+                recordedIndex[i] = i;
+            }
             dealerIndex = 0;
-            deckCopy = cardList;
+            deckCopy = new ImageList();
+
+            deckCopy.ImageSize = cardList.ImageSize;
+            deckCopy.ColorDepth = cardList.ColorDepth; 
+
+            foreach (Image img in cardList.Images)
+            {
+                deckCopy.Images.Add((Image)img.Clone());
+            }
+
             for (int i = 0; i <= 100; i++)
             {
                 int x = randomInt.Next(52);
@@ -107,32 +121,26 @@
             }
 
         }
-
         private void cardOne_Click(object sender, EventArgs e)
         {
             keepBoxOne.Checked = !keepBoxOne.Checked;
         }
-
         private void cardTwo_Click(object sender, EventArgs e)
         {
             keepBoxTwo.Checked = !keepBoxTwo.Checked;
         }
-
         private void cardThree_Click(object sender, EventArgs e)
         {
             keepBoxThree.Checked = !keepBoxThree.Checked;
         }
-
         private void cardFour_Click(object sender, EventArgs e)
         {
             keepBoxFour.Checked = !keepBoxFour.Checked;
         }
-
         private void cardFive_Click(object sender, EventArgs e)
         {
             keepBoxFive.Checked = !keepBoxFive.Checked;
         }
-
         private void saveButton_Click(object sender, EventArgs e)
         {
             SaveFileDialog save = new SaveFileDialog
@@ -141,20 +149,14 @@
                 Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*",
                 InitialDirectory = @"C:\Users\trist\source\repos\Brogan_Assignment3_PokerHand\Brogan_Assignment3_PokerHand\SavedHands\",
                 Title = "Save Poker Hand",
-                FileName = "PokerHand" // Default file name
+                FileName = "PokerHand"
             };
 
             if (save.ShowDialog() == DialogResult.OK)
             {
-                string filePath = save.FileName; // ✅ Use the full path including filename
-
-                // Build the content from savedHand
+                string filePath = save.FileName;
                 string content = string.Join(Environment.NewLine, savedHand.Select(card => card.ToString()));
-
-                // Write text to the file
                 File.WriteAllText(filePath, content);
-
-                MessageBox.Show("Poker hand saved to:\n" + filePath, "Save Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
@@ -176,28 +178,29 @@
                 try
                 {
                     string content = File.ReadAllText(filePath);
-                    MessageBox.Show("Loaded content:\n" + content, "File Loaded", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     string[] lines = File.ReadAllLines(filePath);
 
-                    foreach (string line in lines)
-                    {
-                        int index = int.Parse(line);
-                        hand[index] = deckCopy.Images[index];
-                        recordedIndex[index] = index;
-                    }
-                    dealerIndex = 52;
-                    cardOne.Image = hand[0];
-                    cardTwo.Image = hand[1];
-                    cardThree.Image = hand[2];
-                    cardFour.Image = hand[3];
-                    cardFive.Image = hand[4];  
+                    hand[0] = cardList.Images[int.Parse(lines[0])];
+                    hand[1] = cardList.Images[int.Parse(lines[1])];
+                    hand[2] = cardList.Images[int.Parse(lines[2])];
+                    hand[3] = cardList.Images[int.Parse(lines[3])];
+                    hand[4] = cardList.Images[int.Parse(lines[4])];
+                    cardOne.Image = cardList.Images[int.Parse(lines[0])];
+                    cardTwo.Image = cardList.Images[int.Parse(lines[1])];
+                    cardThree.Image = cardList.Images[int.Parse(lines[2])];
+                    cardFour.Image = cardList.Images[int.Parse(lines[3])];
+                    cardFive.Image = cardList.Images[int.Parse(lines[4])];
+
                 }
                 catch (Exception ex)
                 {
                     MessageBox.Show("Error loading file:\n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);//
                 }
+                finally
+                {
+                    dealerIndex = 53;
+                }
             }
-
         }
     }
 }

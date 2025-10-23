@@ -1,5 +1,0 @@
-cardOne
-cardTwo
-cardThree
-cardFour
-cardFive
